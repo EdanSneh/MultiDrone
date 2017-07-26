@@ -1,5 +1,5 @@
 import numpy as np
-
+from secretmap import secretmap
 
 class themap():
     def __init__(self, row, colm):
@@ -7,20 +7,26 @@ class themap():
 
         self.row = row
         self.colm = colm
-        self.x = (row-1)/2
-        self.y = (colm-1)/2
+        self.y = (row-1)/2
+        self.x = (colm-1)/2
 
-        self.map = np.empty((self.row, self.colm))
+        self.map = np.empty((row, colm))
         self.map[:] = np.NAN
-        print self.map
+        #print self.map
+
+        self.codemap = secretmap(row, colm)
 
     def append(self, row, colm, value):
         self.map[row][colm] = value
-        print self.map
+        #print self.map
+
+
 
     def measure(self):
-        print "PTCH level: {}".format(self.map[self.x][self.y])
-        return self.map[self.x][self.y]
+        self.map[self.y][self.x] = self.codemap.getmap()[self.y][self.x]
+
+        print "PTCH level: {} at [{}, {}]".format(self.map[self.y][self.x], self.x+1, self.y+1)
+        return self.map[self.y][self.x]
 
     def left(self):
         if self.x == 0: raise ValueError
@@ -37,3 +43,9 @@ class themap():
     def down(self):
         if self.y == self.row: raise ValueError
         self.y += -1
+
+    def __str__(self):
+        self.printmap()
+        return ""
+    def printmap(self):
+        print self.map

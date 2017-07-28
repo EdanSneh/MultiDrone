@@ -24,8 +24,8 @@ class themap():
 
     def measure(self):
         self.map[self.y][self.x] = self.codemap.getmap()[self.y][self.x]
-
         print "PTCH level: {} at [{}, {}]".format(self.map[self.y][self.x], self.x+1, self.y+1)
+        print self.map
         return self.map[self.y][self.x]
 
     def left(self):
@@ -38,11 +38,11 @@ class themap():
 
     def up(self):
         if self.y == 0: raise ValueError
-        self.y += 1
+        self.y += -1
 
     def down(self):
         if self.y == self.row: raise ValueError
-        self.y += -1
+        self.y += 1
 
     def __str__(self):
         self.printmap()

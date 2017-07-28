@@ -1,3 +1,3 @@
 from algorithm import algorithm
-
-algorithm()
+from algfullmap import mapalgorithm
+mapalgorithm()

@@ -12,19 +12,42 @@ class algorithm:
         global highesttuple
         highesttuple = [-1, datamap.x, datamap.y]
         #print datamap
+        counter = 0
+
         while(peakfound == False):
-            move = self.smartestmove()
-            print move
-            break;
             plot = datamap.measure()
-            if plot > highesttuple : highesttuple = [plot, datamap.x, datamap.y]
+            if plot > highesttuple[0] : highesttuple = [plot, datamap.x, datamap.y]
+            move = self.smartestmove()
+            self.executemove(move)
+            counter+=1
         print highesttuple
+
+    def executemove(self, move):
+        if move == 1:
+            datamap.left()
+            return
+        elif move == 2:
+            datamap.right()
+            return
+        elif move == 3:
+            datamap.up()
+            return
+        elif move == 4:
+            datamap.down()
+            return
+        raise ValueError
+
+
 
     def smartestmove(self):
         """calculates where drone should move to"""
 
         positions = self.availiblemoves()
-        if abs(datamap.x-highesttuple[1]) == abs(datamap.y- highesttuple[2]) : return self.brainlessmove(positions)
+        print datamap.x
+        print highesttuple[1]
+        print "boolean {}".format(abs(datamap.x-highesttuple[1]))
+        print "boolean {}".format(abs(datamap.y-highesttuple[2]))
+        if abs(datamap.x-highesttuple[1]) == 0 and abs(datamap.y-highesttuple[2]) == 0: return self.brainlessmove(positions)
         shorterdistance = self.xory()
         lastmove = self.nochoice(positions)
         if lastmove>1:
@@ -36,13 +59,14 @@ class algorithm:
 
     def queue(self, highesttuple, shorter):
         priority = [0,0,0,0]
+        #distance to y is shorter
         if shorter:
             if datamap.y > highesttuple[2]:
-                priotity[3]=1
-                priority[2]=4
-            else:
                 priority[3]=4
                 priority[2]=1
+            else:
+                priority[3]=1
+                priority[2]=4
 
             if datamap.x > highesttuple[1]:
                 priority[1] = 3
@@ -50,6 +74,7 @@ class algorithm:
             else:
                 priority[1] = 2
                 priority[0] = 3
+        #distance to x is shorter
         else:
             if datamap.x > highesttuple[1]:
                 priority[1] = 4
@@ -58,11 +83,11 @@ class algorithm:
                 priority[1] = 1
                 priority[0] = 4
             if datamap.y > highesttuple[2]:
-                priotity[3] = 2
-                priority[2] = 3
-            else:
                 priority[3] = 3
                 priority[2] = 2
+            else:
+                priority[3] = 2
+                priority[2] = 3
         return priority
 
 
@@ -81,16 +106,16 @@ class algorithm:
     def availiblemoves(self):
         positions = [0,0,0,0]
         #left
-        if np.isnan(datamap.map[datamap.y][datamap.x-1]):
+        if datamap.x!=0 and np.isnan(datamap.map[datamap.y][datamap.x-1]):
             positions[0] = 1
         #right
-        if np.isnan(datamap.map[datamap.y][datamap.x+1]):
+        if datamap.x!=datamap.colm-1 and np.isnan(datamap.map[datamap.y][datamap.x+1]):
             positions[1] = 1
         #up
-        if np.isnan(datamap.map[datamap.y+1][datamap.x]):
+        if datamap.y!=0 and np.isnan(datamap.map[datamap.y-1][datamap.x]):
             positions[2] = 1
         #down
-        if np.isnan(datamap.map[datamap.y-1][datamap.x]):
+        if datamap.y!=datamap.row-1 and np.isnan(datamap.map[datamap.y+1][datamap.x]) :
             positions[3] = 1
         return positions
 
@@ -103,6 +128,7 @@ class algorithm:
             return False
         return True
     def brainlessmove(self, plist):
+        print "brainlessmove:"
         count = 1
         for i in plist:
             if i == 1:
@@ -117,6 +143,7 @@ class algorithm:
         bestmove = 5
         for i in plist:
             if i == 1:
+                print olist
                 if olist[counter]<bestmove:
                     bestmove = olist[counter]
                     bestmoveindex = counter+1

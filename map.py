@@ -14,8 +14,7 @@ class themap():
         self.map[:] = np.NAN
         #print self.map
 
-        self.codemap = secretmap(row, colm)
-
+        self.codemap = secretmap(row, colm).map
     def append(self, row, colm, value):
         self.map[row][colm] = value
         #print self.map
@@ -23,7 +22,7 @@ class themap():
 
 
     def measure(self):
-        self.map[self.y][self.x] = self.codemap.getmap()[self.y][self.x]
+        self.map[self.y][self.x] = self.codemap.map[self.y][self.x]
         print "PTCH level: {} at [{}, {}]".format(self.map[self.y][self.x], self.x+1, self.y+1)
         print self.map
         return self.map[self.y][self.x]

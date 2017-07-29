@@ -6,9 +6,31 @@
 #closer circle analysis
 
 from map import themap
+import numpy as np
+
 class mapalgorithm:
 
-    def __init__(self):
-        self.datamap = themap(10,10)
+    def __init__(self, datamap = themap(14,14)):
+        self.datamap = datamap
         self.secretmap = self.datamap.codemap
-        print self.datamap
+        circlemap = self.detectcircles()
+
+    def detectcircles(self):
+        #TODO array not using strs
+        circleit = [[""]*np.size(self.datamap.map,0) for _ in range(np.size(self.datamap.map,1))]
+
+        indexrow = 0
+        for row in self.secretmap:
+            indexcol = 0
+            for rowval in row:
+                if rowval < 24:
+                    circleit[indexrow][indexcol] = "null"
+                    self.namecheck()
+                elif rowval >= 24 and rowval <= 60:
+                    self.namecheck()
+                    circleit[indexrow][indexcol] = "c1_ex"
+                else:
+                    circleit[indexrow][indexcol] = "c1_in"
+                print circleit
+                indexcol += 1
+            indexrow += 1

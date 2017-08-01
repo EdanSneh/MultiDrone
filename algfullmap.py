@@ -14,6 +14,38 @@ class mapalgorithm:
         self.datamap = datamap
         self.secretmap = self.datamap.codemap
         circlemap = self.detectcircles()
+        self.circle_merge(circlemap)
+        self.map_edges(circlemap)
+
+    def map_edges(self, cmap):
+        #TODO if inside circle touching outside, map it as part of that circle
+        #TODO return array packets of all the different circle numbers ex: c1_in
+
+    def circle_merge(self, cmap):
+        for row in range(0, len(cmap)):
+            for col in range(0, len(cmap[row])):
+                if cmap[row][col][0] == "c":
+                    index = cmap[row][col]
+                    if row!=len(cmap) and cmap[row+1][col][0] == "c" and cmap[row+1][col] != index:
+                        self.changeval(thecmap = cmap, initial = cmap[row][col], final = cmap[row+1][col])
+                    if col!=0 and cmap[row][col-1][0] == "c" and cmap[row][col-1] != index:
+                        self.changeval(thecmap = cmap, initial = cmap[row][col], final = cmap[row][col-1])
+                    if col!=len(cmap[row]) and cmap[row][col+1][0] == "c" and cmap[row][col+1] != index:
+                        self.changeval(thecmap = cmap, initial = cmap[row][col], final = cmap[row][col+1])
+                    if row!=0 and cmap[row-1][col][0] == "c" and cmap[row-1][col] != index:
+                        self.changeval(thecmap = cmap, initial = cmap[row][col], final = cmap[row-1][col])
+
+    def changeval(self, thecmap, initial, final):
+        print("final {}".format(final))
+        print("initial {}".format(initial))
+        for row in range(0, len(thecmap)):
+            for col in range(0, len(thecmap[row])):
+                if thecmap[row][col] == final:
+                    thecmap[row][col] = initial
+                    print thecmap[row][col]
+                # if val == final:
+                #     val = initial
+                #     print val
 
     def detectcircles(self):
         #TODO array not using strs
@@ -36,7 +68,7 @@ class mapalgorithm:
 
                 indexcol += 1
             indexrow += 1
-        print circleit
+        return circleit
 
     def namecheck(self, array, row, col):
         lamebool = False
@@ -56,3 +88,5 @@ class mapalgorithm:
             return savearray
         self.names += 1
         return "c"+str(self.names)+"_i"
+
+        #create next-array for detecting if val higher than a certain number

@@ -8,7 +8,7 @@
 from map import themap
 import numpy as np
 
-class mapalgorithm:
+class Mapalgorithm:
 
     def __init__(self, datamap = themap(14,14)):
         self.datamap = datamap
@@ -20,11 +20,28 @@ class mapalgorithm:
     def map_edges(self, cmap):
         #TODO if inside circle touching outside, map it as part of that circle
         #TODO return array packets of all the different circle numbers ex: c1_in
+        for point in self.circles:
+            row = point[0]
+            col = point[1]
+            value = cmap[row][col][0:cmap[row][col].index("_")]
+
+            if row!=len(cmap) and "edge" in cmap[row+1][col]:
+                if value not in cmap[row+1][col]: cmap[row+1][col] += ".{}".format(value)
+            if col!=0 and "edge" in cmap[row][col-1]:
+                if value not in cmap[row][col-1]: cmap[row][col-1] += ".{}".format(value)
+            if col!=len(cmap[row]) and "edge" in cmap[row][col+1]:
+                if value not in cmap[row][col+1]: cmap[row][col+1] += ".{}".format(value)
+            if row!=0 and "edge" in cmap[row-1][col]:
+                if value not in cmap[row-1][col]: cmap[row-1][col] += ".{}".format(value)
+        print(cmap)
 
     def circle_merge(self, cmap):
+        self.circles = []
         for row in range(0, len(cmap)):
             for col in range(0, len(cmap[row])):
                 if cmap[row][col][0] == "c":
+                    #values containing cmap
+                    self.circles.append([row, col])
                     index = cmap[row][col]
                     if row!=len(cmap) and cmap[row+1][col][0] == "c" and cmap[row+1][col] != index:
                         self.changeval(thecmap = cmap, initial = cmap[row][col], final = cmap[row+1][col])
@@ -36,13 +53,11 @@ class mapalgorithm:
                         self.changeval(thecmap = cmap, initial = cmap[row][col], final = cmap[row-1][col])
 
     def changeval(self, thecmap, initial, final):
-        print("final {}".format(final))
-        print("initial {}".format(initial))
         for row in range(0, len(thecmap)):
             for col in range(0, len(thecmap[row])):
                 if thecmap[row][col] == final:
                     thecmap[row][col] = initial
-                    print thecmap[row][col]
+
                 # if val == final:
                 #     val = initial
                 #     print val

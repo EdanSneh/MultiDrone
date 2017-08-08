@@ -8,7 +8,7 @@
 from map import themap
 import numpy as np
 
-class Mapalgorithm:
+class MapAlgorithm:
 
     def __init__(self, datamap = themap(14,14)):
         self.datamap = datamap
@@ -16,22 +16,79 @@ class Mapalgorithm:
         self.circlemap = self.detectcircles()
         self.circle_merge(self.circlemap)
         self.map_edges(self.circlemap)
+        self. circles_v2 = self.circlearraytocircle(self.circles, self.circlemap)
+        self.edges_v2 = self.edgearraytocircle(self.edges, self.circlemap)
+
+    def circlearraytocircle(self,circlearray, inmap):
+        arrayandcount = {}
+        for origindata in circlearray:
+
+            mapvalue = inmap[origindata[0]][origindata[1]]
+            arrayandcount[mapvalue]=0
+
+            for data in circlearray[1:len(circlearray)]:
+                if mapvalue == inmap[data[0]][data[1]]:
+                    arrayandcount[mapvalue] += 1
+        return arrayandcount
+
+    def edgearraytocircle(self,edgearray, inmap):
+        arrayandcount = {}
+        for origindata in edgearray:
+            #arrayandcountkey {circlevalue : edgecount, min_x_len, min_y_len, max_x_len, max_y_len}
+            mapvalue = inmap[origindata[0]][origindata[1]]
+            arrayandcount[mapvalue]=[0,0,0,0,0]
+            smallestx = origindata[0]
+            smallesty = origindata[1]
+            greatestx = origindata[0]
+            greatesty = origindata[1]
+
+            datacounter = 1
+            for data in edgearray[1:len(edgearray)]:
+                if mapvalue == inmap[data[0]][data[1]]:
+
+                    arrayandcount[mapvalue][0] += 1
+                    #locating the x and y mins and max for circle
+                    if greatestx < data[0]:
+                        greatestx = data[0]
+                    elif smallestx > data[0]:
+                        smallestx = data[0]
+                    if greatesty < data[1]:
+                        greatesty = data[1]
+                    elif smallesty > data[1]:
+                        smallesty = data[1]
+                    del edgearray[datacounter]
+                    datacounter -= 1
+
+                datacounter +=1
+
+            arrayandcount[mapvalue][1] = smallestx
+            arrayandcount[mapvalue][2] = smallesty
+            arrayandcount[mapvalue][3] = greatestx
+            arrayandcount[mapvalue][4] = greatesty
+        return arrayandcount
+
+
 
     def map_edges(self, cmap):
         #TODO if inside circle touching outside, map it as part of that circle
         #TODO return array packets of all the different circle numbers ex: c1_in
+        self.edges = []
         for point in self.circles:
             row = point[0]
             col = point[1]
             value = cmap[row][col][0:cmap[row][col].index("_")]
 
             if row!=len(cmap) and "edge" in cmap[row+1][col]:
+                self.edges.append([row+1,col])
                 if value not in cmap[row+1][col]: cmap[row+1][col] += ".{}".format(value)
             if col!=0 and "edge" in cmap[row][col-1]:
+                self.edges.append([row,col-1])
                 if value not in cmap[row][col-1]: cmap[row][col-1] += ".{}".format(value)
             if col!=len(cmap[row]) and "edge" in cmap[row][col+1]:
+                self.edges.append([row,col+1])
                 if value not in cmap[row][col+1]: cmap[row][col+1] += ".{}".format(value)
             if row!=0 and "edge" in cmap[row-1][col]:
+                self.edges.append([row-1,col])
                 if value not in cmap[row-1][col]: cmap[row-1][col] += ".{}".format(value)
         # print(cmap)
 

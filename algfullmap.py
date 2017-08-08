@@ -13,9 +13,9 @@ class Mapalgorithm:
     def __init__(self, datamap = themap(14,14)):
         self.datamap = datamap
         self.secretmap = self.datamap.codemap
-        circlemap = self.detectcircles()
-        self.circle_merge(circlemap)
-        self.map_edges(circlemap)
+        self.circlemap = self.detectcircles()
+        self.circle_merge(self.circlemap)
+        self.map_edges(self.circlemap)
 
     def map_edges(self, cmap):
         #TODO if inside circle touching outside, map it as part of that circle
@@ -33,7 +33,7 @@ class Mapalgorithm:
                 if value not in cmap[row][col+1]: cmap[row][col+1] += ".{}".format(value)
             if row!=0 and "edge" in cmap[row-1][col]:
                 if value not in cmap[row-1][col]: cmap[row-1][col] += ".{}".format(value)
-        print(cmap)
+        # print(cmap)
 
     def circle_merge(self, cmap):
         self.circles = []

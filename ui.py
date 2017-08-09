@@ -5,13 +5,19 @@ from pyglet.gl import *
 from tile import Tile
 import numpy as np
 
+
+virtualmap = MapAlgorithm()
+global lengthmap
+lengthmap = len(virtualmap.secretmap)
+
+
 def makecircle(xmidpoint,ymidpoint,xradi,yradi):
     PI = 3.1415926535898
     circle_points = 100
     glBegin(GL_LINE_LOOP)
     for i in range(100):
        angle = 2*PI*i/circle_points
-       glVertex2f(xmidpoint+np.cos(angle)*yradi, ymidpoint+np.sin(angle)*xradi)
+       glVertex2f(xmidpoint+np.cos(angle)*xradi, ymidpoint+np.sin(angle)*yradi)
 
     glEnd()
 
@@ -38,7 +44,8 @@ def colorize(themap):
     return bigtilearray
 
 #-----------------------------void Main-------------------------------------
-virtualmap = MapAlgorithm()
+# virtualmap = MapAlgorithm()
+
 coloredmap = colorize(virtualmap)
 edgelist = virtualmap.edges_v2
 # findgeometry
@@ -81,7 +88,7 @@ def on_draw():
     glClear(GL_COLOR_BUFFER_BIT)
     glLoadIdentity()
     #makes color blue
-    glColor3f(0.0, 0.0, 1.0)
+
     #makes color red
     squaresize = 30
     # drawing the map
@@ -95,20 +102,22 @@ def on_draw():
             glVertex2f(i.location[0]*squaresize+25.0, i.location[1]*squaresize+25.0)
             glVertex2f(i.location[0]*squaresize+25.0, i.location[1]*squaresize+0.0)
             glEnd()
+
+
     glColor3f(0.2, .9, 0.2)
     for element in edgelist:
-        print edgelist[element]
         xmidpoint = float(edgelist[element][1]+edgelist[element][3])/2.0
         ymidpoint = float(edgelist[element][2]+edgelist[element][4])/2.0
         xradi = (edgelist[element][3]-edgelist[element][1])/2
-
         yradi = (edgelist[element][4]-edgelist[element][2])/2
-        print "xradi: {}, yradi: {}".format(xradi, yradi)
-        print "xmidpoint: {}, ymidpoint: {}".format(xmidpoint, ymidpoint)
+        # print "xradi: {}, yradi: {}".format(xradi, yradi)
+        # print "xmidpoint: {}, ymidpoint: {}".format(xmidpoint, ymidpoint)
+        # glColor3f(0.2, .9, 0.2)
         #detect if noise or leak
         if edgelist[element][0] >= 8:
-            makecircle(xmidpoint*squaresize+12.5,ymidpoint*squaresize+12.5,xradi*squaresize, yradi*squaresize)
-        print element
+
+            makecircle(xmidpoint*squaresize+12.5,(lengthmap-ymidpoint)*squaresize+12.5, xradi*squaresize, yradi*squaresize)
+            makecircle(xmidpoint*squaresize+12.5,(lengthmap-ymidpoint)*squaresize+12.5, 5, 5)
 
     # pyglet.graphics.draw(2, pyglet.gl.GL_POINTS,
     # ('v2i', (10, 15, 30, 35)),

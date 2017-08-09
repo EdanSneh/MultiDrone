@@ -16,9 +16,9 @@ class MapAlgorithm:
         self.circlemap = self.detectcircles()
         self.circle_merge(self.circlemap)
         self.map_edges(self.circlemap)
-        self. circles_v2 = self.circlearraytocircle(self.circles, self.circlemap)
+        self.circles_v2 = self.circlearraytocircle(self.circles, self.circlemap)
         self.edges_v2 = self.edgearraytocircle(self.edges, self.circlemap)
-
+        print self.circlemap
     def circlearraytocircle(self,circlearray, inmap):
         arrayandcount = {}
         for origindata in circlearray:
@@ -33,14 +33,15 @@ class MapAlgorithm:
 
     def edgearraytocircle(self,edgearray, inmap):
         arrayandcount = {}
+
         for origindata in edgearray:
             #arrayandcountkey {circlevalue : edgecount, min_x_len, min_y_len, max_x_len, max_y_len}
             mapvalue = inmap[origindata[0]][origindata[1]]
             arrayandcount[mapvalue]=[0,0,0,0,0]
-            smallestx = origindata[0]
-            smallesty = origindata[1]
-            greatestx = origindata[0]
-            greatesty = origindata[1]
+            smallestx = origindata[1]
+            smallesty = origindata[0]
+            greatestx = origindata[1]
+            greatesty = origindata[0]
 
             datacounter = 1
             for data in edgearray[1:len(edgearray)]:
@@ -48,14 +49,14 @@ class MapAlgorithm:
 
                     arrayandcount[mapvalue][0] += 1
                     #locating the x and y mins and max for circle
-                    if greatestx < data[0]:
-                        greatestx = data[0]
-                    elif smallestx > data[0]:
-                        smallestx = data[0]
-                    if greatesty < data[1]:
-                        greatesty = data[1]
-                    elif smallesty > data[1]:
-                        smallesty = data[1]
+                    if greatestx < data[1]:
+                        greatestx = data[1]
+                    elif smallestx > data[1]:
+                        smallestx = data[1]
+                    if greatesty < data[0]:
+                        greatesty = data[0]
+                    elif smallesty > data[0]:
+                        smallesty = data[0]
                     del edgearray[datacounter]
                     datacounter -= 1
 

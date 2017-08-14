@@ -31,48 +31,56 @@ class MapAlgorithm:
                     arrayandcount[mapvalue] += 1
         return arrayandcount
 
-    def edgearraytocircle(self,edgearray, inmap):
+    def edgearraytocircle(self, edgearray, inmap):
+        #TODO detect .c1.c2 and find way to split
+
         arrayandcount = {}
-
+        # print edgearray
         for origindata in edgearray:
-            #arrayandcountkey {circlevalue : edgecount, min_x_len, min_y_len, max_x_len, max_y_len}
             mapvalue = inmap[origindata[0]][origindata[1]]
-            arrayandcount[mapvalue]=[0,0,0,0,0]
-            smallestx = origindata[1]
-            smallesty = origindata[0]
-            greatestx = origindata[1]
-            greatesty = origindata[0]
+            if mapvalue.count('.') == 1:
+                # print "origindata: {}".format(origindata)
+                #arrayandcountkey {circlevalue : edgecount, min_x_len, min_y_len, max_x_len, max_y_len}
 
-            datacounter = 1
-            for data in edgearray[1:len(edgearray)]:
-                if mapvalue == inmap[data[0]][data[1]]:
+                arrayandcount[mapvalue]=[0,0,0,0,0]
+                smallestx = origindata[1]
+                smallesty = origindata[0]
+                greatestx = origindata[1]
+                greatesty = origindata[0]
 
-                    arrayandcount[mapvalue][0] += 1
-                    #locating the x and y mins and max for circle
-                    if greatestx < data[1]:
-                        greatestx = data[1]
-                    elif smallestx > data[1]:
-                        smallestx = data[1]
-                    if greatesty < data[0]:
-                        greatesty = data[0]
-                    elif smallesty > data[0]:
-                        smallesty = data[0]
-                    del edgearray[datacounter]
-                    datacounter -= 1
+                datacounter = 1
+                for data in edgearray[1:len(edgearray)]:
+                    # print data
+                    if mapvalue[mapvalue.index("."):] in inmap[data[0]][data[1]]:
 
-                datacounter +=1
+                        arrayandcount[mapvalue][0] += 1
+                        #locating the x and y mins and max for circle
+                        if greatestx < data[1]:
+                            greatestx = data[1]
+                        elif smallestx > data[1]:
+                            smallestx = data[1]
+                        if greatesty < data[0]:
+                            greatesty = data[0]
+                        elif smallesty > data[0]:
+                            smallesty = data[0]
+                        if mapvalue.count('.') == 1:
+                            del edgearray[datacounter]
+                            datacounter -= 1
 
-            arrayandcount[mapvalue][1] = smallestx
-            arrayandcount[mapvalue][2] = smallesty
-            arrayandcount[mapvalue][3] = greatestx
-            arrayandcount[mapvalue][4] = greatesty
+                    datacounter +=1
+
+                arrayandcount[mapvalue][1] = smallestx
+                arrayandcount[mapvalue][2] = smallesty
+                arrayandcount[mapvalue][3] = greatestx
+                arrayandcount[mapvalue][4] = greatesty
         return arrayandcount
 
 
-
+#if inside circle touching outside, map it as part of that circle
     def map_edges(self, cmap):
-        #TODO if inside circle touching outside, map it as part of that circle
-        #TODO return array packets of all the different circle numbers ex: c1_in
+
+
+        # array packets of all the different circle numbers ex: c1_in
         self.edges = []
         for point in self.circles:
             row = point[0]

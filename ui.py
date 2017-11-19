@@ -4,12 +4,11 @@ import pyglet
 from pyglet.gl import *
 from tile import Tile
 import numpy as np
-
+from velocity import Velocity
 
 virtualmap = MapAlgorithm()
 global lengthmap
 lengthmap = len(virtualmap.secretmap)
-
 
 def makecircle(xmidpoint,ymidpoint,xradi,yradi):
     PI = 3.1415926535898
@@ -32,7 +31,7 @@ def colorize(themap):
     rowcount = 0
     count = 0
     ysize = len(themap.secretmap)
-    print "ysize: {}".format(ysize)
+    # print "ysize: {}".format(ysize)
     for row in themap.secretmap:
         tilearray = []
         for index in row:
@@ -67,12 +66,12 @@ label = pyglet.text.Label('Hello, world',
 @window.event
 def on_key_press(symbol, modifiers):
     if symbol == key.Q:
-        print "Window Exited."
+        # print "Window Exited."
         exit(window)
 
 platform = pyglet.window.get_platform()
 display = platform.get_default_display()
-print display.get_default_screen()
+# print display.get_default_screen()
 
 
 # void reshape (int w, int h)
@@ -87,6 +86,51 @@ print display.get_default_screen()
 def on_draw():
     glClear(GL_COLOR_BUFFER_BIT)
     glLoadIdentity()
+    
+
+
+    arrow = Velocity()
+
+
+    label = pyglet.text.Label(
+    str(arrow.magnitude)+' m/s',
+    x=530, y=120+arrow.booleanchoice,
+    anchor_x='center', anchor_y='center')
+    label.draw()
+
+    
+
+    # print speed.xcoord
+#velocity arrows
+    glBegin(GL_LINES)
+    glColor3f(.9,.10,.12)
+    #long line
+    glVertex2f(530, 100)
+    glVertex2f(530+arrow.xcoord, 100+arrow.ycoord)
+    #sidelines
+    glVertex2f(530+arrow.leftx, 100+arrow.lefty)
+    glVertex2f(530+arrow.xcoord, 100+arrow.ycoord)
+
+    glVertex2f(530+arrow.rightx, 100+arrow.righty)
+    glVertex2f(530+arrow.xcoord, 100+arrow.ycoord)
+
+    glEnd()
+
+#height
+    landheight = pyglet.text.Label(
+    str(arrow.height)+' cm',
+    x=530, y=420+arrow.height,
+    anchor_x='center', anchor_y='center')
+    landheight.draw() 
+    
+    glColor3f(70.0/255.0,129.0/255.0,130.0/255.0)    
+    glBegin(GL_POLYGON) 
+    glVertex2f(510, 400)
+    glVertex2f(550, 400)
+    glVertex2f(550, 400+arrow.height)
+    glVertex2f(510, 400+arrow.height)
+    
+    glEnd()
     #makes color blue
 
     #makes color red
@@ -95,6 +139,7 @@ def on_draw():
     for row in coloredmap:
         for i in row:
             glColor3f(i.colorval[0],0.0,i.colorval[1])
+
             # glColor3f(count,0.0,0.0)
             glBegin(GL_POLYGON)
             glVertex2f(i.location[0]*squaresize+0.0, i.location[1]*squaresize+0.0)
@@ -116,8 +161,8 @@ def on_draw():
         #detect if noise or leak
         if edgelist[element][0] >= 8:
 
-            makecircle(xmidpoint*squaresize+12.5,(lengthmap-ymidpoint)*squaresize+12.5, xradi*squaresize, yradi*squaresize)
-            makecircle(xmidpoint*squaresize+12.5,(lengthmap-ymidpoint)*squaresize+12.5, 5, 5)
+            makecircle(xmidpoint*squaresize+12.5 -arrow.xcoord,(lengthmap-ymidpoint)*squaresize+12.5-arrow.ycoord, xradi*squaresize, yradi*squaresize)
+            makecircle(xmidpoint*squaresize+12.5 -arrow.xcoord,(lengthmap-ymidpoint)*squaresize+12.5 -arrow.ycoord, 5+arrow.height*.6, 5+arrow.height*.6)
 
     # pyglet.graphics.draw(2, pyglet.gl.GL_POINTS,
     # ('v2i', (10, 15, 30, 35)),

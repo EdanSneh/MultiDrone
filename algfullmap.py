@@ -18,7 +18,7 @@ class MapAlgorithm:
         self.map_edges(self.circlemap)
         self.circles_v2 = self.circlearraytocircle(self.circles, self.circlemap)
         self.edges_v2 = self.edgearraytocircle(self.edges, self.circlemap)
-        print self.circlemap
+        # print self.circlemap
     def circlearraytocircle(self,circlearray, inmap):
         arrayandcount = {}
         for origindata in circlearray:
